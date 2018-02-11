@@ -1,3 +1,5 @@
+package moe.yiheng
+
 import org.telegram.telegrambots.api.methods.send.SendMessage
 import org.telegram.telegrambots.api.methods.send.SendSticker
 import org.telegram.telegrambots.api.objects.Update
@@ -101,23 +103,23 @@ class MyBot : TelegramLongPollingBot() {
             if (groups.containsKey(message.chatId)) {  // 群组已经存在
                 groups.remove(message.chatId)
                 groups.put(message.chatId, GregorianCalendar()) // 刷新最后时间
-                log("刷新了${message.chatId}的最后说话时间")
+                log("${message.chat.title}中,@${message.from.userName} 说:\"${message.text}\",message id为${message.messageId}")
             } else {
                 groups.put(message.chatId, GregorianCalendar())
-                log("发现新群组:${message.chatId}")
+                log("发现新群组:${message.chat.title},id为${message.chatId}")
                 val thread = runThread(message.chatId)
                 threads.put(message.chatId, thread)
                 thread.start()
             }
         }
-        if (message.sticker != null && message.isUserMessage) {                // 是sticker
+        if (message.sticker != null && message.isUserMessage) { // 是sticker
             if (message.chat.userName in canAdd) {                             // 有add权限
                 if (stickers.add(message.sticker.fileId)) {
                     stickerFile.appendText("${message.sticker.fileId}\n")
                     log("${message.chat.userName}添加了" + message.sticker.fileId)
                     execute(SendMessage(message.chatId, "添加了一个sticker,file id为${message.sticker.fileId}"))
                 } else {
-                    execute(SendMessage(message.chatId, "sticker已经存在"))
+                    execute(SendMessage(message.chatId, "fileid为${message.sticker.fileId}的\nsticker已经存在"))
                 }
             } else {
                 execute(SendMessage(message.chatId, "没有add权限"))
@@ -127,7 +129,7 @@ class MyBot : TelegramLongPollingBot() {
             return
         }
         if (message.isCommand) {
-            log("get a command from ${message.chat.firstName},called ${message.text}")
+            log("get a command from ${message.from.userName}, saying ${message.text}")
             when {
                 message.text.equals("/get_stickers") -> {
                     if (message.isUserMessage) {
@@ -146,18 +148,18 @@ class MyBot : TelegramLongPollingBot() {
             try {
                 sendSticker(sendSticker)
             } catch (e: Exception) {
-                log("在群组 ${message.chatId} 中发送sticker出错\n" + e.message)
+                log("在群组 ${message.chat.title} 中发送sticker出错\n" + e.message)
             }
         }
     }
 
 
     override fun getBotToken(): String {
-        return botToken
+        return Config.token
     }
 
     override fun getBotUsername(): String {
-        return botName
+        return Config.botName
     }
 
     fun getRandomSticker(): String {
