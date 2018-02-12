@@ -29,6 +29,9 @@ class MyBot : TelegramLongPollingBot() {
 
     val canAdd = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01",
             "yiheng233", "KaCyan", "LetITFly", "YuutaW")
+
+    val text = listOf<String>("好耶","坏耶","不 可 以")
+
     var min = 9 * 60 // 最小时间,单位为秒
     var max = 15 * 60 // 最大时间(不包括)
 
@@ -41,13 +44,18 @@ class MyBot : TelegramLongPollingBot() {
                     val shouldSleep = random.nextInt(max - min) + min
                     log("下次发送:$shouldSleep")
                     Thread.sleep((shouldSleep * 1000).toLong())
-                    var sendSticker = SendSticker().setChatId(chatId).setSticker(getRandomSticker())
-                    try {
-                        sendSticker(sendSticker)
-                    } catch (e: Exception) {
-                        log("在群组 $chatId 中发送sticker出错\n" + e.message)
+                    when (random.nextInt(20)) {    //二十分之一的几率发文字
+                        1 -> { execute(SendMessage(chatId, text[random.nextInt(text.size)])) }                          // 发文字
+                        else -> {
+                            var sendSticker = SendSticker().setChatId(chatId).setSticker(getRandomSticker())
+                            try {
+                                sendSticker(sendSticker)
+                            } catch (e: Exception) {
+                                log("在群组 $chatId 中发送sticker出错\n" + e.message)
+                            }
+                        }
                     }
-                    log("向$chatId 发送了sticker")
+                    log("向$chatId 发送了sticker或文字")
                 }
             } catch (e: Exception) {
                 log("$chatId deleted")
