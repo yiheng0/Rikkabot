@@ -153,7 +153,7 @@ class MyBot : TelegramLongPollingBot() {
 
         if (message.text.contains("/sticker")) {
             when {
-                message.text.trim().contains("rikka") -> {
+                message.text.toLowerCase().contains("rikka") -> {
                     log("在${message.chatId}中通过指令发送了一个sticker")
                     val sendSticker = SendSticker().setChatId(message.chatId).setSticker(getRandomSticker())
                     try {
