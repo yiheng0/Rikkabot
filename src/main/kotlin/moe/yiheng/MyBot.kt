@@ -27,10 +27,9 @@ class MyBot : TelegramLongPollingBot() {
 
     val random = Random()
 
-    val canAdd = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01",
-            "yiheng233", "KaCyan", "LetITFly", "YuutaW")
+    val canAdd = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01", "yiheng233")
 
-    val text = listOf<String>("好耶","坏耶","不 可 以","吃")
+    val text = listOf<String>("好耶", "坏耶", "不 可 以", "吃")
 
     var min = 9 * 60 // 最小时间,单位为秒
     var max = 15 * 60 // 最大时间(不包括)
@@ -45,9 +44,11 @@ class MyBot : TelegramLongPollingBot() {
                     log("下次发送:$shouldSleep")
                     Thread.sleep((shouldSleep * 1000).toLong())
                     when (random.nextInt(10)) {    //十分之一的几率发文字
-                        1 -> { execute(SendMessage(chatId, text[random.nextInt(text.size)])) }                          // 发文字
+                        1 -> {
+                            execute(SendMessage(chatId, text[random.nextInt(text.size)]))
+                        }                          // 发文字
                         else -> {
-                            var sendSticker = SendSticker().setChatId(chatId).setSticker(getRandomSticker())
+                            val sendSticker = SendSticker().setChatId(chatId).setSticker(getRandomSticker())
                             try {
                                 sendSticker(sendSticker)
                             } catch (e: Exception) {
@@ -151,12 +152,16 @@ class MyBot : TelegramLongPollingBot() {
         }
 
         if (message.text.contains("/sticker")) {
-            log("在${message.chatId}中通过指令发送了一个sticker")
-            var sendSticker = SendSticker().setChatId(message.chatId).setSticker(getRandomSticker())
-            try {
-                sendSticker(sendSticker)
-            } catch (e: Exception) {
-                log("在群组 ${message.chat.title} 中发送sticker出错\n" + e.message)
+            when {
+                message.text.trim().contains("rikka") -> {
+                    log("在${message.chatId}中通过指令发送了一个sticker")
+                    val sendSticker = SendSticker().setChatId(message.chatId).setSticker(getRandomSticker())
+                    try {
+                        sendSticker(sendSticker)
+                    } catch (e: Exception) {
+                        log("在群组 ${message.chat.title} 中发送sticker出错\n" + e.message)
+                    }
+                }
             }
         }
     }
