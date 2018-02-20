@@ -2,6 +2,7 @@ package moe.yiheng
 
 import org.telegram.telegrambots.api.methods.send.SendMessage
 import org.telegram.telegrambots.api.methods.send.SendSticker
+import org.telegram.telegrambots.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.api.objects.Update
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import java.io.*
@@ -15,21 +16,21 @@ import kotlin.collections.HashMap
  */
 class MyBot : TelegramLongPollingBot() {
 
-    val stickers = HashSet<String>()
+    private val stickers = HashSet<String>()
 
-    val stickerFile = File("stickers.txt")
+    private val stickerFile = File("stickers.txt")
 
-    val logFile = File("log.txt")
+    private val logFile = File("log.txt")
 
-    val groups = HashMap<Long, Calendar>() // key:chatId,value:最后说话的时间
+    private val groups = HashMap<Long, Calendar>() // key:chatId,value:最后说话的时间
 
-    val threads = HashMap<Long, Thread>() // chatId与线程的映射
+    private val threads = HashMap<Long, Thread>() // chatId与线程的映射
 
     val random = Random()
 
-    val canAdd = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01", "yiheng233")
+    private val hasPermission = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01", "yiheng233")
 
-    val text = listOf<String>("好耶", "坏耶", "不 可 以", "吃")
+    val text = listOf("好耶", "坏耶", "不 可 以", "吃")
 
     var min = 9 * 60 // 最小时间,单位为秒
     var max = 15 * 60 // 最大时间(不包括)
@@ -90,7 +91,7 @@ class MyBot : TelegramLongPollingBot() {
                 shouldDelete.forEach {
                     if (groups.remove(it) != null) {
                         log("删除了群组$it")
-                        threads.get(it)?.interrupt()
+                        threads[it]?.interrupt()
                         threads.remove(it)
                     }
                 }
@@ -101,28 +102,28 @@ class MyBot : TelegramLongPollingBot() {
 
 
     override fun onUpdateReceived(update: Update?) {
-        if (update == null) {
-            return
-        }
-        if (!update.hasMessage()) {
-            return
-        }
+        if (update == null) return
+
+        if (!update.hasMessage()) return
+
         val message = update.message
+
         if (message.isGroupMessage || message.isSuperGroupMessage) {
             if (groups.containsKey(message.chatId)) {  // 群组已经存在
                 groups.remove(message.chatId)
-                groups.put(message.chatId, GregorianCalendar()) // 刷新最后时间
+                groups[message.chatId] = GregorianCalendar() // 刷新最后时间
                 log("${message.chat.title}中,@${message.from.userName} 说:\"${message.text}\",message id为${message.messageId}")
             } else {
                 groups.put(message.chatId, GregorianCalendar())
                 log("发现新群组:${message.chat.title},id为${message.chatId}")
                 val thread = runThread(message.chatId)
-                threads.put(message.chatId, thread)
+                threads[message.chatId] = thread
                 thread.start()
             }
         }
-        if (message.sticker != null && message.isUserMessage) { // 是sticker
-            if (message.chat.userName in canAdd) {                             // 有add权限
+
+        if (message.sticker != null && message.isUserMessage) { // 是私聊sticker
+            if (message.chat.userName in hasPermission) {                             // 有add权限
                 if (stickers.add(message.sticker.fileId)) {
                     stickerFile.appendText("${message.sticker.fileId}\n")
                     log("${message.chat.userName}添加了" + message.sticker.fileId)
@@ -134,9 +135,9 @@ class MyBot : TelegramLongPollingBot() {
                 execute(SendMessage(message.chatId, "没有add权限"))
             }
         }
-        if (message.text == null) {
-            return
-        }
+
+        if (message.text == null) return
+
         if (message.isCommand) {
             log("get a command from ${message.from.userName}, saying ${message.text}")
             when {
@@ -160,6 +161,21 @@ class MyBot : TelegramLongPollingBot() {
                         sendSticker(sendSticker)
                     } catch (e: Exception) {
                         log("在群组 ${message.chat.title} 中发送sticker出错\n" + e.message)
+                    }
+                }
+            }
+        }
+
+        if (message.text.contains("/delete") && message.from.userName in hasPermission) {
+            if (message.replyToMessage != null) {
+                if (message.replyToMessage.from.userName == Config.botName) {
+                    try {
+                        execute(DeleteMessage()
+                                .setChatId(message.chatId.toString())
+                                .setMessageId(message.replyToMessage.messageId))
+                        log("删除消息成功")
+                    } catch (e: Exception) {
+                        log("删除消息失败")
                     }
                 }
             }
