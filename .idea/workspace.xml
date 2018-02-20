@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c72d556c-6361-41ad-96fc-4242628fbf44" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/kotlin/moe/yiheng/Config_example.kt" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/moe/yiheng/Config_example.java" afterPath="" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/moe/yiheng/MyBot.kt" afterPath="$PROJECT_DIR$/src/main/kotlin/moe/yiheng/MyBot.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -82,8 +80,8 @@
       <file leaf-file-name="MyBot.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/moe/yiheng/MyBot.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="167" column="0" lean-forward="true" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+            <state relative-caret-position="2877">
+              <caret line="146" column="51" lean-forward="false" selection-start-line="146" selection-start-column="51" selection-end-line="146" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -834,7 +832,7 @@
       <workItem from="1518769881616" duration="12000" />
       <workItem from="1518770061431" duration="10000" />
       <workItem from="1518770090778" duration="5000" />
-      <workItem from="1519131229321" duration="664000" />
+      <workItem from="1519131229321" duration="756000" />
     </task>
     <task id="LOCAL-00001" summary="基本功能做完">
       <created>1518269514346</created>
@@ -934,11 +932,18 @@
       <option name="project" value="LOCAL" />
       <updated>1518599699104</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="现在 回复bot的消息 &quot;/delete&quot; 可以让bot自己删除">
+      <created>1519131920095</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1519131920095</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23618000" />
+    <option name="totallyTimeSpent" value="23710000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1038,7 +1043,8 @@
     <MESSAGE value="修改可自动说的话" />
     <MESSAGE value="应该 修复了 可能跟Kacyan bot指令冲突的bug" />
     <MESSAGE value="应该 修复了 跟Kacyan bot指令冲突的bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="应该 修复了 跟Kacyan bot指令冲突的bug" />
+    <MESSAGE value="现在 回复bot的消息 &quot;/delete&quot; 可以让bot自己删除" />
+    <option name="LAST_COMMIT_MESSAGE" value="现在 回复bot的消息 &quot;/delete&quot; 可以让bot自己删除" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1401,8 +1407,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/moe/yiheng/MyBot.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="167" column="0" lean-forward="true" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+        <state relative-caret-position="2877">
+          <caret line="146" column="51" lean-forward="false" selection-start-line="146" selection-start-column="51" selection-end-line="146" selection-end-column="51" />
           <folding />
         </state>
       </provider>

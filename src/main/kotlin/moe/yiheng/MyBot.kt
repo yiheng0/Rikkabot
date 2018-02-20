@@ -28,7 +28,7 @@ class MyBot : TelegramLongPollingBot() {
 
     val random = Random()
 
-    private val hasPermission = listOf<String>("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01", "yiheng233")
+    private val hasPermission = listOf("kotomei", "RikkaW", "WordlessEcho", "Duang", "hyx01", "yiheng233")
 
     val text = listOf("好耶", "坏耶", "不 可 以", "吃")
 
@@ -36,7 +36,7 @@ class MyBot : TelegramLongPollingBot() {
     var max = 15 * 60 // 最大时间(不包括)
 
 
-    inner class runThread(val chatId: Long) : Thread() {
+    inner class RunThread(private val chatId: Long) : Thread() {
         override fun run() {
             try {
                 log("群组 $chatId 开始运行")
@@ -114,9 +114,9 @@ class MyBot : TelegramLongPollingBot() {
                 groups[message.chatId] = GregorianCalendar() // 刷新最后时间
                 log("${message.chat.title}中,@${message.from.userName} 说:\"${message.text}\",message id为${message.messageId}")
             } else {
-                groups.put(message.chatId, GregorianCalendar())
+                groups[message.chatId] = GregorianCalendar()
                 log("发现新群组:${message.chat.title},id为${message.chatId}")
-                val thread = runThread(message.chatId)
+                val thread = RunThread(message.chatId)
                 threads[message.chatId] = thread
                 thread.start()
             }
@@ -141,7 +141,7 @@ class MyBot : TelegramLongPollingBot() {
         if (message.isCommand) {
             log("get a command from ${message.from.userName}, saying ${message.text}")
             when {
-                message.text.equals("/get_stickers") -> {
+                message.text == "/get_stickers" -> {
                     if (message.isUserMessage) {
                         val content = StringBuffer()
                         stickers.forEach { content.append(it).append("\n") }
